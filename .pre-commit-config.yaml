@@ -1,6 +1,6 @@
 fail_fast: false
 default_language_version:
-  python: python3.12
+  python: python3.13
 default_stages: [commit, push]
 
 repos:

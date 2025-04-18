@@ -17,7 +17,7 @@ class HttpJwtAuth(HttpBearer):
         try:
             access_token = decode_token(token, token_type=TokenTypes.ACCESS, verify=True)
         except PyJWTError as e:
-            raise AuthenticationError(e)
+            raise AuthenticationError(message=str(e))
 
         self.set_token_claims_to_user(request.user, access_token)
 
@@ -25,7 +25,10 @@ class HttpJwtAuth(HttpBearer):
 
     @staticmethod
     def set_token_claims_to_user(user: AbstractBaseUser | AnonymousUser, token: dict) -> None:
-        for claim, user_attribute in ninja_simple_jwt_settings.TOKEN_CLAIM_USER_ATTRIBUTE_MAP.items():
+        for (
+            claim,
+            user_attribute,
+        ) in ninja_simple_jwt_settings.TOKEN_CLAIM_USER_ATTRIBUTE_MAP.items():
             if isinstance(user_attribute, str):
                 setattr(user, user_attribute, token.get(claim))
             else:
